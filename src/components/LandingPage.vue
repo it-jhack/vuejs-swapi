@@ -92,7 +92,7 @@ export default {
       },
       { text: "Director(s)", value: "director" },
       { text: "Producer(s)", value: "producer" },
-      { text: "Release Date", value: "release_date" },
+      { text: "Release Date (day/month/year)", value: "release_date" },
     ],
   }),
   methods: {
@@ -114,10 +114,15 @@ export default {
             title: response.data.title,
             director: response.data.director,
             producer: response.data.producer,
-            release_date: response.data.release_date,
+            release_date: this.convertDate(response.data.release_date),
           })
         );
       });
+    },
+
+    convertDate(dateString) {
+      let p = dateString.split(/\D/g);
+      return [p[2], p[1], p[0]].join("/");
     },
   },
   mounted() {
