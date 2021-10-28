@@ -4,8 +4,8 @@
       <v-col cols="12">
         <br />
         <v-text center
-          >Select a Star Wars Character, and see which movies it's been
-          in!</v-text
+          >Search or select a Star Wars character, and see which movies it's
+          been in!</v-text
         >
       </v-col>
     </v-row>
@@ -14,18 +14,34 @@
         <v-autocomplete
           @change="getCharMovies"
           v-model="value"
-          :items="charNames"
+          :items="response.data.results.name"
           filled
           dark
           label="Search or select character"
         ></v-autocomplete>
         <!-- #! BEGIN DELETE -->
-        <!-- <v-text>{{ characters }}</v-text
-        ><br /> -->
-        <v-text>{{ charNames }}</v-text
-        ><br />
-        <v-text>{{ charMovies }}</v-text
-        ><br />
+        <v-expansion-panels dark multiple>
+          <v-expansion-panel>
+            <v-expansion-panel-header> response </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ response }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header> charNames </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ charNames }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header> charMovies </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ charMovies }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
         <!-- #! END DELETE -->
       </v-col>
     </v-row>
@@ -40,24 +56,19 @@ export default {
 
   data: () => ({
     response: [],
-    results: [],
     charNames: [],
     charMovies: [],
     value: null,
   }),
   methods: {
     async getAllChars() {
-      this.response = await axios
-        .get("https://swapi.dev/api/people/")
-        .then((response) => (this.results = response.data.results));
+      this.response = await axios.get("https://swapi.dev/api/people/");
 
-      for (let result in this.results) {
+      this.response.data.results.forEach((result) => {
         this.charNames.push(result.name);
-      }
+        // let index = result.
+      });
     },
-    // getCharMovies() {
-    //   alert("getCharMovies");
-    // },
   },
   mounted() {
     this.getAllChars();
