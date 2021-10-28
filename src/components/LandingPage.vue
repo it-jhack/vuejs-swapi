@@ -52,13 +52,17 @@
 
     <v-row>
       <v-col cols="8">
-        <h1 v-if="value != null">Movies that {{ value }} participated:</h1>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium
-        accusamus blanditiis, beatae dolore consectetur, impedit saepe porro ex
-        voluptatibus provident fugiat velit. Necessitatibus autem quod neque
-        quae porro, impedit unde maxime ex eius expedita? Id, illum repellendus?
-        Nam excepturi molestiae asperiores consequuntur, consequatur incidunt
-        neque debitis suscipit quasi praesentium architecto?
+        <h2 v-if="value != null">Movies that {{ value }} participated:</h2>
+        <v-data-table
+          v-if="value != null"
+          hide-default-footer
+          dark
+          dense
+          :headers="headers"
+          :items="moviesData"
+          item-key="name"
+          class="elevation-1"
+        ></v-data-table>
       </v-col>
       <v-col cols="4">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero,
@@ -79,6 +83,17 @@ export default {
     charMoviesApiUrl: null,
     moviesData: [],
     value: null,
+    headers: [
+      {
+        text: "Film Title",
+        align: "start",
+        sortable: false,
+        value: "title",
+      },
+      { text: "Director(s)", value: "director" },
+      { text: "Producer(s)", value: "producer" },
+      { text: "Release Date", value: "release_date" },
+    ],
   }),
   methods: {
     async getAllChars() {
@@ -86,6 +101,8 @@ export default {
     },
 
     getCharMovies() {
+      this.moviesData = []; //resetting array, so it does not pile up with previous selections
+
       this.response.data.results.forEach((result) => {
         if (result.name == this.value) {
           this.charMoviesApiUrl = result.films;
@@ -114,5 +131,9 @@ v-text {
   color: rgb(255, 255, 255);
   text-align: center;
   font-size: 20px;
+}
+
+h2 {
+  color: rgb(255, 255, 255);
 }
 </style>
