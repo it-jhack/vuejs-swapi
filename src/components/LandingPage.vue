@@ -92,11 +92,14 @@ export default {
         }
       });
       this.charMoviesApiUrl.forEach((movieApiUrl) => {
-        // this.moviesData.push(axios.get(movieApiUrl));
-        // this.moviesData.push(async await axios.get("https://swapi.dev/api/people/"));
-        axios
-          .get(movieApiUrl)
-          .then((response) => this.moviesData.push(response));
+        axios.get(movieApiUrl).then((response) =>
+          this.moviesData.push({
+            title: response.data.title,
+            director: response.data.director,
+            producer: response.data.producer,
+            release_date: response.data.release_date,
+          })
+        );
       });
     },
   },
