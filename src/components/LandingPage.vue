@@ -15,7 +15,7 @@
         <v-autocomplete
           @change="getCharMovies"
           v-model="value"
-          :items="response.data.results"
+          :items="characters"
           item-text=".name"
           filled
           dark
@@ -27,6 +27,13 @@
             <v-expansion-panel-header> response </v-expansion-panel-header>
             <v-expansion-panel-content>
               {{ response }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-header> characters </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ characters }}
             </v-expansion-panel-content>
           </v-expansion-panel>
 
@@ -64,6 +71,8 @@
           class="elevation-1"
         ></v-data-table>
       </v-col>
+
+      <!-- #! TODO -->
       <v-col cols="4">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero,
         pariatur.
@@ -80,6 +89,7 @@ export default {
 
   data: () => ({
     response: [],
+    characters: [],
     charMoviesApiUrl: null,
     moviesData: [],
     value: null,
@@ -97,15 +107,35 @@ export default {
   }),
   methods: {
     async getAllChars() {
+      // Chars come in group of 10 per page
       this.response = await axios.get("https://swapi.dev/api/people/");
+      const count = this.response.data.count;
+      const pages = Math.ceil(count / 10);
+
+      // I opted not filtering each char data that is relevant for now because:
+      // -in case we want to explore more data for each char in the future
+      // -this request is only made once (when loading the page)
+      this.response.data.results.forEach((result) => {
+        this.characters.push(result);
+      });
+
+      // Chars from results on first page already gotten previously, so now page 2 until end
+      for (let i = 2; i <= pages; i++) {
+        this.response = await axios.get(
+          "https://swapi.dev/api/people/?page=" + i
+        );
+        this.response.data.results.forEach((result) => {
+          this.characters.push(result);
+        });
+      }
     },
 
     getCharMovies() {
       this.moviesData = []; //resetting array, so it does not pile up with previous selections
 
-      this.response.data.results.forEach((result) => {
-        if (result.name == this.value) {
-          this.charMoviesApiUrl = result.films;
+      this.characters.forEach((char) => {
+        if (char.name == this.value) {
+          this.charMoviesApiUrl = char.films;
         }
       });
       this.charMoviesApiUrl.forEach((movieApiUrl) => {
