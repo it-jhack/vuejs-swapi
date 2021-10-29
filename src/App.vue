@@ -16,7 +16,7 @@
       <v-spacer></v-spacer>
 
       <v-btn href="https://swapi.dev/" target="_blank" text>
-        <span class="mr-2">Swapi Documentation</span>
+        <span class="mr-2">Swapi Docs</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
@@ -24,17 +24,20 @@
     <v-main class="dark-bg">
       <LandingPage />
     </v-main>
+    <MyFooter />
   </v-app>
 </template>
 
 <script>
 import LandingPage from "./components/LandingPage";
+import MyFooter from "./components/Footer";
 
 export default {
   name: "App",
 
   components: {
     LandingPage,
+    MyFooter,
   },
 
   data: () => ({
