@@ -35,6 +35,9 @@
           dense
           :loading="loadingTable"
           loading-text="Loading it is. Patient you must be!"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          must-sort
           :headers="headers"
           :items="moviesData"
           item-key="name"
@@ -49,8 +52,6 @@
 import axios from "axios";
 
 export default {
-  name: "HelloWorld", // #!DEL
-
   data: () => ({
     response: [],
     characters: [],
@@ -58,23 +59,24 @@ export default {
     moviesData: [],
     loadingTable: true,
     value: null,
+    sortBy: "release_date",
+    sortDesc: false,
     headers: [
       {
         text: "Film Title",
         align: "start",
-        sortable: false,
         value: "title",
       },
       { text: "Director(s)", value: "director" },
       { text: "Producer(s)", value: "producer" },
-      { text: "Release Date (day/month/year)", value: "release_date" },
+      { text: "Release Date (year-month-day)", value: "release_date" },
     ],
   }),
   methods: {
-    convertDate(dateString) {
-      let p = dateString.split(/\D/g);
-      return [p[2], p[1], p[0]].join("/");
-    },
+    // convertDate(dateString) {
+    //   let p = dateString.split(/\D/g);
+    //   return [p[2], p[1], p[0]].join("/");
+    // },
 
     async getAllChars() {
       // Chars come in group of 10 per page
@@ -117,7 +119,7 @@ export default {
             title: response.data.title,
             director: response.data.director,
             producer: response.data.producer,
-            release_date: this.convertDate(response.data.release_date),
+            release_date: response.data.release_date,
           })
         );
       });
