@@ -13,7 +13,7 @@
     <v-row>
       <v-col cols="10" class="center">
         <v-autocomplete
-          @change="getCharMovies"
+          @change="getCharMovies()"
           v-model="value"
           :items="characters"
           item-text=".name"
@@ -33,6 +33,8 @@
           hide-default-footer
           dark
           dense
+          :loading="loadingTable"
+          loading-text="Loading it is. Patient you must be!"
           :headers="headers"
           :items="moviesData"
           item-key="name"
@@ -47,13 +49,14 @@
 import axios from "axios";
 
 export default {
-  name: "HelloWorld",
+  name: "HelloWorld", // #!DEL
 
   data: () => ({
     response: [],
     characters: [],
     charMoviesApiUrl: null,
     moviesData: [],
+    loadingTable: true,
     value: null,
     headers: [
       {
@@ -68,6 +71,11 @@ export default {
     ],
   }),
   methods: {
+    convertDate(dateString) {
+      let p = dateString.split(/\D/g);
+      return [p[2], p[1], p[0]].join("/");
+    },
+
     async getAllChars() {
       // Chars come in group of 10 per page
       this.response = await axios.get("https://swapi.dev/api/people/");
@@ -92,7 +100,8 @@ export default {
       }
     },
 
-    getCharMovies() {
+    async getCharMovies() {
+      this.loadingTable = true;
       this.moviesData = []; //resetting array, so it does not pile up with previous selections
 
       this.characters.forEach((char) => {
@@ -102,7 +111,7 @@ export default {
       });
 
       // Request each movie url listed under selected char
-      this.charMoviesApiUrl.forEach((movieApiUrl) => {
+      await this.charMoviesApiUrl.forEach((movieApiUrl) => {
         axios.get(movieApiUrl).then((response) =>
           this.moviesData.push({
             title: response.data.title,
@@ -112,11 +121,7 @@ export default {
           })
         );
       });
-    },
-
-    convertDate(dateString) {
-      let p = dateString.split(/\D/g);
-      return [p[2], p[1], p[0]].join("/");
+      this.loadingTable = "false";
     },
   },
 
