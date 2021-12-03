@@ -42,7 +42,11 @@
           :items="moviesData"
           item-key="name"
           class="elevation-1"
-        ></v-data-table>
+        >
+          <template v-slot:[`item.release_date`]="{ item }">
+            {{ displayDate(item.release_date) }}
+          </template>
+        </v-data-table>
       </v-col>
     </v-row>
   </v-container>
@@ -73,10 +77,10 @@ export default {
     ],
   }),
   methods: {
-    // convertDate(dateString) {
-    //   let p = dateString.split(/\D/g);
-    //   return [p[2], p[1], p[0]].join("/");
-    // },
+    displayDate(dateString) {
+      let p = dateString.split(/\D/g);
+      return [p[2], p[1], p[0]].join("/");
+    },
 
     async getAllChars() {
       // Chars come in group of 10 per page
