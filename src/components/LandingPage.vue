@@ -45,10 +45,11 @@
       </v-col>
       <v-col :cols="imgCols" align-self="start" order="0">
         <v-img
-          :src="charImgUrl"
-          :lazy-src="thumbnailUrl"
-          v-if="charImgUrl"
-          rounded
+          :src="thumbnailUrl"
+          lazy-src="src/assets/unknown-char.png"
+          v-if="thumbnailUrl"
+          v-on:error="thumbnailUrl = 'src/assets/unknown-char.png'"
+          dark
         >
           <template v-slot:placeholder>
             <v-row class="fill-height ma-0" align="center" justify="center">
@@ -128,7 +129,6 @@ export default {
     mkt: "en-US",
     imgSearchResponse: null,
     thumbnailUrl: null,
-    charImgUrl: null,
 
     tbHeaders: [
       {
@@ -202,6 +202,8 @@ export default {
     bingImgWebSearch(query, count, mkt, azureKey, customConfig) {
       const https = require("https");
 
+      this.thumbnailUrl = null;
+
       https.get(
         {
           hostname: "api.bing.microsoft.com",
@@ -224,14 +226,23 @@ export default {
           res.on("end", () => {
             let responseObj = JSON.parse(body);
 
-            // Extract img urls from the response obj
-            this.thumbnailUrl = responseObj.value[0].thumbnailUrl;
-            this.charImgUrl = responseObj.value[0].contentUrl;
+            for (let i = 0; i < count; i++) {
+              try {
+                // Extract img urls from the response obj
+                this.thumbnailUrl = responseObj.value[i].thumbnailUrl;
 
-            // Delayed response test
+                if (this.thumbnailUrl != null) {
+                  i = count; // Break
+                }
+              } catch (err) {
+                console.log(err.message);
+                console.log(err.stack);
+              }
+            }
+
+            // Delay test
             // setTimeout(() => {
             //   this.thumbnailUrl = responseObj.value[0].thumbnailUrl;
-            //   this.charImgUrl = responseObj.value[0].contentUrl;
             // }, 2000);
           });
           res.on("error", (e) => {
@@ -247,7 +258,7 @@ export default {
       this.getCharMovies();
       await this.bingImgWebSearch(
         this.selectedCharName,
-        1,
+        5,
         this.mkt,
         this.VUE_APP_AZURE_SUBSCRIPTION_KEY,
         this.VUE_APP_CUSTOM_CONFIG
