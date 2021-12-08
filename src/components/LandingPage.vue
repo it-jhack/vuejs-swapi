@@ -25,7 +25,15 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center">
+    <v-row>
+      <v-col :cols="tableCols" class="center">
+        <h2 v-if="selectedCharName != null">
+          {{ selectedCharName }}
+        </h2>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center" v-if="thumbnailUrl != null">
       <v-col :cols="statsCols" order="1" class="justify-text">
         <!-- Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit tempora
         accusamus neque laboriosam accusantium eaque recusandae asperiores
