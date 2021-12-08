@@ -2,6 +2,8 @@
 
 ![Peek 2021-12-08 09-12](https://user-images.githubusercontent.com/74467166/145206831-596087cc-9c65-41f5-ac08-4180ceca29f5.gif)
 
+## About
+
 This is a Vue.js example project in order to showcase some of my front-end skills, documentation following capacity, repository management, and quick learning capability. That's because there was not a single follow-through tutorial and I had to fit many different puzzle pieces to make this project work in the way I intended.
 
 The program fetches characters from [Star Wars Api (Swapi)], processes the response JSON object and return data about the given character. For instance, which Star Wars movies that the character has been in. It can also use search engines and websites through API fetching to fetch a character image.
