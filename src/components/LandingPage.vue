@@ -27,7 +27,7 @@
 
     <v-row>
       <v-col :cols="tableCols" class="center">
-        <h2 v-if="selectedCharName != null">
+        <h2 v-if="selectedCharName != null && thumbnailUrl != null">
           {{ selectedCharName }}
         </h2>
       </v-col>
